@@ -18,10 +18,13 @@ void setup()
   }
 }
 
+int delta = 100;
 void loop()
 {
   Update();
-  Wait(50);
+  Wait(delta / 2);
+  delta -= 1;
+  if (delta < 20) delta = 20;
 }
 
 int jump_state = 0;  // 1,2 - 3,4
@@ -29,9 +32,20 @@ int duck_state = 0;
 int player_pos = 3;  // 3-4
 int enemy_pos = 0;
 int enemy_type = 0;
+boolean new_game = 1;
 
 void Update()
 {
+  if (new_game) {
+    delta = 100;
+    jump_state = 0;
+    duck_state = 0;
+    player_pos = 3;
+    enemy_pos = 0;
+    enemy_type = 0;
+    new_game = 0;
+  }
+
   boolean jump = 1 - digitalRead(LEFT_BUTTON);
   boolean duck = 1 - digitalRead(RIGHT_BUTTON);
 
@@ -96,7 +110,8 @@ void Update()
 }
 
 void GameOver() {
-  for (int t = 0; t < 999; ++t) {
+  new_game = 1;
+  for (int t = 0; t < 5; ++t) {
     for (int i = 0; i < 8; ++i) {
       for (int j = 0; j < 8; ++j) {
         screen[i][j] = t % 2;
